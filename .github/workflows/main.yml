@@ -14,6 +14,7 @@ jobs:
         run: |
           unzip -q Enigma2Player.zip
           sed -i 's/exoplayer\.DefaultMediaSourceFactory/exoplayer.source.DefaultMediaSourceFactory/g' Enigma2Player/app/src/main/java/com/example/enigma2player/MainActivity.kt
+          echo "org.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=1g" >> Enigma2Player/gradle.properties
 
       - uses: actions/setup-java@v4
         with:
