@@ -1,0 +1,34 @@
+name: Build APK
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Unzip project and fix import
+        run: |
+          unzip -q Enigma2Player.zip
+          sed -i 's/exoplayer\.DefaultMediaSourceFactory/exoplayer.source.DefaultMediaSourceFactory/g' Enigma2Player/app/src/main/java/com/example/enigma2player/MainActivity.kt
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Build debug APK
+        working-directory: Enigma2Player
+        run: gradle :app:assembleDebug --no-daemon
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Enigma2Player-debug
+          path: Enigma2Player/app/build/outputs/apk/debug/app-debug.apk
